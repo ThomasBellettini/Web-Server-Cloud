@@ -119,9 +119,6 @@ public class CloudRouteManager {
 
             });
 
-            get("/img/:name", (request, response) -> {
-
-            });
         }
     }
 
