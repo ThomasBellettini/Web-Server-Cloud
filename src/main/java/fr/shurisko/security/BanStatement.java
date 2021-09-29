@@ -5,7 +5,7 @@ import fr.shurisko.entity.permission.RankManager;
 import spark.Request;
 import spark.Response;
 
-public class checkBanStatement {
+public class BanStatement {
 
     public static boolean checkUserBan(Request request, Response response, CloudUser cloudUser) {
         if (cloudUser.getRankManager() == RankManager.BANNED) {

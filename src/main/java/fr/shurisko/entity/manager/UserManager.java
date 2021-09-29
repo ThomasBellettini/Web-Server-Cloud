@@ -14,6 +14,15 @@ public class UserManager {
         UManager = this;
     }
 
+    public CloudUser getUserByToken(String token) {
+        for (CloudUser tmp : cloudUsers) {
+            if (tmp.getAuthToken().toString().equals(token)) {
+                return tmp;
+            }
+        }
+        return null;
+    }
+
     public void updateUser(CloudUser cloudUser) {
         for (CloudUser tmp : cloudUsers) {
             if (tmp.ID == cloudUser.ID) {
