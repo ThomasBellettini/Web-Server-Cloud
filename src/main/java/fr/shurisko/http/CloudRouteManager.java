@@ -1,17 +1,28 @@
 package fr.shurisko.http;
 
 import fr.shurisko.entity.CloudUser;
+import fr.shurisko.entity.manager.UserManager;
 import fr.shurisko.http.api.CloudRoute;
 import fr.shurisko.http.api.enumeration.RequestType;
 import fr.shurisko.security.LoginSecurity;
 import fr.shurisko.session.CloudSession;
 import fr.shurisko.utils.Color;
 import fr.shurisko.utils.ParserHTML;
+import org.apache.commons.io.FileUtils;
 import spark.Request;
 import spark.Response;
+import spark.Session;
+
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.http.Part;
 
 import static spark.Spark.*;
 
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +40,11 @@ public class CloudRouteManager {
         if (!LoginSecurity.kickNonLoggedUser(request, response)) return null;
         CloudUser user = CloudSession.getUser(request);
         return "Salut à tous vous êtes actuellement login! <br> Votre pseudo: " + user.getUsername() +
-                "<br> Votre Grade: <span style=\"color: "+ user.getRankManager().getColorHex() + " \">" + user.getRankManager().getRankName() + "</span>";
+                "<br> Votre Grade: <span style=\"color: "+ user.getRankManager().getColorHex() + " \">" + user.getRankManager().getRankName() + "</span>" +
+                "<form method='post' enctype='multipart/form-data'>" // note the enctype
+                + "    <input type='file' name='uploaded_file'>" // make sure to call getPart using the same "name" in the post
+                + "    <button>Upload picture</button>"
+                + "</form>";
     }
 
     public String loginProtocol(Request request, Response response) {
@@ -69,6 +84,12 @@ public class CloudRouteManager {
     }
 
     public void loadAllRoute() {
+
+        File uploadDir = new File("upload");
+        uploadDir.mkdir(); // create the upload directory if it doesn't exist
+
+        staticFiles.externalLocation("upload");
+
         port(8000);
         for (CloudRoute cloudRoute : cloudRoutes) {
             switch (cloudRoute.getRequestType()) {
@@ -82,6 +103,34 @@ public class CloudRouteManager {
                     delete(cloudRoute.getRouteName(), ((request, response) -> cloudRoute.getFunctionExecutable().routeFunction(request, response)));
                     break;
             }
+
+            post("/home", (req, res) -> {
+                CloudUser cloudUser = CloudSession.getUser(req);
+                req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+                try (InputStream input = req.raw().getPart("uploaded_file").getInputStream()) { // getPart needs to use same "name" as input field in form
+                    File file = new File(uploadDir, cloudUser.ID + getFileName(req.raw().getPart("uploaded_file")));
+
+                    FileUtils.copyInputStreamToFile(input, file);
+                    System.out.println(getFileName(req.raw().getPart("uploaded_file")));
+                    System.out.println(input);
+                    return "<h1>You uploaded this image:<h1><img src='" + file.getAbsolutePath() + "'>";
+
+                }
+
+            });
+
+            get("/img/:name", (request, response) -> {
+
+            });
         }
+    }
+
+    private static String getFileName(Part part) {
+        for (String cd : part.getHeader("content-disposition").split(";")) {
+            if (cd.trim().startsWith("filename")) {
+                return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
     }
 }
