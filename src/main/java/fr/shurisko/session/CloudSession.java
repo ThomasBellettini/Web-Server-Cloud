@@ -2,12 +2,18 @@ package fr.shurisko.session;
 
 import fr.shurisko.entity.CloudUser;
 import fr.shurisko.entity.manager.UserManager;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.eclipse.jetty.server.Authentication;
 import spark.Request;
 import spark.Response;
 
+import java.util.Locale;
 import java.util.UUID;
 
 public class CloudSession {
+
+    private static String SALT_ONE = "EFUHSFLVN-785";
+    private static String SALT_TWO = "OEZFJNBVFS-68415325";
 
     public static boolean isLogged(Request request) {
         if (request.session().attribute("cloudToken") != null) {
@@ -39,18 +45,37 @@ public class CloudSession {
         return null;
     }
 
+    public static String hashPass(String pass) {
+        return DigestUtils.md5Hex(SALT_ONE + pass + SALT_TWO).toUpperCase(Locale.ROOT);
+    }
+
     public static CloudUser login(Request request) {
         String username = request.params("username");
         String password = request.params("password");
 
         for (CloudUser cloudUser : UserManager.UManager.cloudUsers) {
             if (cloudUser.getUsername().equalsIgnoreCase(username)) {
-                if (password.equals(cloudUser.getPassword())) {
+                if (hashPass(password).equals(cloudUser.getPassword())) {
                     return cloudUser;
                 }
             }
         }
         return null;
+    }
+
+    public static CloudUser register(Request request) {
+        String username = request.params("username");
+        String password = request.params("password");
+        String email = request.params("email");
+
+        for (CloudUser cloudUser : UserManager.UManager.cloudUsers) {
+            if (cloudUser.getUsername().equalsIgnoreCase(username)) {
+                return null;
+            }
+        }
+        CloudUser cloudUser = new CloudUser(username, hashPass(password), email);
+        UserManager.UManager.addUser(cloudUser);
+        return cloudUser;
     }
 
 }

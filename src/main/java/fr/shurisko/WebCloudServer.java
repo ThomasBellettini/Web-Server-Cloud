@@ -5,6 +5,7 @@ import fr.shurisko.entity.manager.UserManager;
 import fr.shurisko.entity.permission.RankManager;
 import fr.shurisko.http.CloudRouteManager;
 import fr.shurisko.http.api.CloudRoute;
+import fr.shurisko.storage.GsonStorageCloudAccount;
 
 import java.util.UUID;
 
@@ -15,15 +16,15 @@ public class WebCloudServer {
     public static WebCloudServer CloudAPI;
     public CloudRouteManager cloudRouteManager;
     public UserManager userManager;
+    public GsonStorageCloudAccount gsonStorageCloudAccount;
 
     public WebCloudServer() {
         CloudAPI = this;
-        cloudRouteManager = new CloudRouteManager();
         userManager = new UserManager();
-
+        gsonStorageCloudAccount = new GsonStorageCloudAccount();
+        gsonStorageCloudAccount.loadAll();
+        cloudRouteManager = new CloudRouteManager();
         cloudRouteManager.loadAllRoute();
-
-        userManager.addUser(new CloudUser("Shurisko", "admin", UUID.randomUUID(), RankManager.ADMIN));
     }
 
     public static void main(String[] args) {

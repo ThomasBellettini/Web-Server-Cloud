@@ -16,6 +16,7 @@ public class UserManager {
 
     public CloudUser getUserByToken(String token) {
         for (CloudUser tmp : cloudUsers) {
+            if (tmp.getAuthToken() == null) continue;
             if (tmp.getAuthToken().toString().equals(token)) {
                 return tmp;
             }
