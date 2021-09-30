@@ -15,8 +15,7 @@ public class ParserHTML {
     }
 
     public static String parseHTML(String htmlName) {
-        File f = new File(htmlName + ".html");
-        ClassLoader.getSystemResource()
+        File f = new File("html/" + htmlName + ".html");
         if (f.exists()) {
             try {
                 final BufferedReader r = new BufferedReader(new FileReader(f));
