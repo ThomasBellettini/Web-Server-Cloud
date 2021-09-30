@@ -13,6 +13,8 @@ import fr.shurisko.route.user.DisplayCommonPage;
 import fr.shurisko.session.CloudSession;
 import fr.shurisko.utils.CloudImageUtils;
 import org.apache.commons.io.FileUtils;
+import spark.Request;
+import spark.Response;
 
 import javax.servlet.MultipartConfigElement;
 
@@ -56,6 +58,14 @@ public class CloudRouteManager {
 
         RouteByteFunctionManager send_image = ((request, response) -> DisplayImage.sendImage(request, response));
         makeRoute("/img/:id", RequestType.GET, send_image);
+
+        RouteFunctionManager redirect_function = (request, response) -> {
+            if (CloudSession.isLogged(request) && CloudSession.getUser(request) != null)
+                response.redirect("/home");
+            else response.redirect("/login");
+            return null;
+        };
+        makeRoute("/", RequestType.GET, redirect_function);
     }
 
     public void loadAllRoute() {
