@@ -7,11 +7,13 @@ import fr.shurisko.http.CloudRouteManager;
 import fr.shurisko.http.api.CloudRoute;
 import fr.shurisko.storage.GsonStorageCloudAccount;
 
+import java.io.File;
 import java.util.UUID;
 
 public class WebCloudServer {
 
     public String ressourceURL = "http://cdn.shurisko.fr/";
+    public File uploadDir = new File("upload");
 
     public static WebCloudServer CloudAPI;
     public CloudRouteManager cloudRouteManager;
