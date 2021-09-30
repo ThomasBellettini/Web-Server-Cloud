@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class WebCloudServer {
 
-    public String ressourceURL = "http://icm.shurisko.fr/";
+    public String ressourceURL = "http://cdn.shurisko.fr/";
 
     public static WebCloudServer CloudAPI;
     public CloudRouteManager cloudRouteManager;
