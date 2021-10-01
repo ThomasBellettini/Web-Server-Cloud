@@ -59,9 +59,6 @@ public class CloudRouteManager {
         RouteByteFunctionManager send_image = ((request, response) -> DisplayImage.sendImage(request, response));
         makeRoute("/img/:id", RequestType.GET, send_image);
 
-        RouteFunctionManager rfc = (request, response) -> sendRsa(request);
-        makeRoute("/.well-known/pki-validation/CAA9FE1AD1E7F9DC3B12B4DBB8F6981B.txt", RequestType.GET, rfc);
-
         RouteFunctionManager redirect_function = (request, response) -> {
             if (CloudSession.isLogged(request) && CloudSession.getUser(request) != null)
                 response.redirect("/home");
@@ -69,10 +66,6 @@ public class CloudRouteManager {
             return null;
         };
         makeRoute("/", RequestType.GET, redirect_function);
-    }
-
-    public String sendRsa(Request request) {
-        return "66483B3BDC39FCCB7DEBD00B6171F03F2DAAA17C9FCD27C00D8A80EBACA6CA0C comodoca.com 6156b067b2c66";
     }
 
     public void loadAllRoute() {

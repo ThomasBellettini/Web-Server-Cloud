@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class WebCloudServer {
 
-    public String ressourceURL = "http://cdn.shurisko.fr/";
+    public String ressourceURL = "https://cdn.shurisko.fr/";
     public File uploadDir = new File("upload");
 
     public static WebCloudServer CloudAPI;
