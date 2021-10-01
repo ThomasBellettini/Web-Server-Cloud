@@ -12,7 +12,8 @@ public class DisplayCommonPage {
         if (!LoginSecurity.kickNonLoggedUser(request, response)) return null;
 
         CloudUser user = CloudSession.getUser(request);
-        return "Salut à tous vous êtes actuellement login! <br> Votre pseudo: " + user.getUsername() +
+        return "\t<link rel=\"icon\" type=\"image/png\" href=\"%url/images/icons/favicon.ico\"/>\n" +
+                "Salut à tous vous êtes actuellement login! <br> Votre pseudo: " + user.getUsername() +
                 "<br> Votre Grade: <span style=\"color: "+ user.getRankManager().getColorHex() + " \">" + user.getRankManager().getRankName() + "</span>" +
                 "<form method='post' enctype='multipart/form-data'>" // note the enctype
                 + "    <input type='file' name='uploaded_file'>" // make sure to call getPart using the same "name" in the post
