@@ -34,6 +34,15 @@ public class UserManager {
         }
     }
 
+    public CloudUser getUserByID(int id) {
+        for (CloudUser tmp : cloudUsers) {
+            if (tmp.ID == id) {
+                return tmp;
+            }
+        }
+        return null;
+    }
+
     public void addUser(CloudUser cloudUser) {
         for (CloudUser tmp : cloudUsers)
             if (tmp.ID == cloudUser.ID)

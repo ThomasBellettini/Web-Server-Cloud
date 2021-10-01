@@ -45,6 +45,10 @@ public class CloudSession {
         return null;
     }
 
+    public static CloudUser getUserByID(int id) {
+        return UserManager.UManager.getUserByID(id);
+    }
+
     public static String hashPass(String pass) {
         return DigestUtils.md5Hex(SALT_ONE + pass + SALT_TWO).toUpperCase(Locale.ROOT);
     }
